@@ -47,8 +47,13 @@ async function run() {
 
         // This for carts
 
-        app.post("carts",async(req,res)=>{
+        app.post("/carts",async(req,res)=>{
             const data = req.body;
+            const cursor= {title: data.title}
+            const isTitleExit = await cartCollection.findOne(cursor);
+            if(isTitleExit){
+                return res.send({ message: 'game already exists', insertedId: null })
+            }
             const result = await cartCollection.insertOne(data);
             res.send(result);
         })
