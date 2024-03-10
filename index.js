@@ -23,11 +23,13 @@ const client = new MongoClient(uri, {
 
 async function run() {
     const userCollection = client.db("Game-Enfiled").collection("users");
+    const cartCollection = client.db("Game-Enfiled").collection("carts");
     try {
 
         // await client.connect();
         // Send a ping to confirm a successful connection
 
+        // This for user
         app.post("/users", async (req, res) => {
             const data = req.body
             const query = { email: data.email }
@@ -43,6 +45,18 @@ async function run() {
             res.send(result);
         });
 
+        // This for carts
+
+        app.post("carts",async(req,res)=>{
+            const data = req.body;
+            const result = await cartCollection.insertOne(data);
+            res.send(result);
+        })
+
+        app.get("/carts", async (req, res) => {
+            const result = await cartCollection.find().toArray();
+            res.send(result);
+        });
 
 
         await client.db("admin").command({ ping: 1 });
