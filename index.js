@@ -47,11 +47,11 @@ async function run() {
 
         // This for carts
 
-        app.post("/carts",async(req,res)=>{
+        app.post("/carts", async (req, res) => {
             const data = req.body;
-            const cursor= {title: data.title}
+            const cursor = { title: data.title }
             const isTitleExit = await cartCollection.findOne(cursor);
-            if(isTitleExit){
+            if (isTitleExit) {
                 return res.send({ message: 'game already exists', insertedId: null })
             }
             const result = await cartCollection.insertOne(data);
@@ -59,7 +59,12 @@ async function run() {
         })
 
         app.get("/carts", async (req, res) => {
-            const result = await cartCollection.find().toArray();
+            const email = req.query.email;
+            let query = { }
+            if (email) {
+                 query = { email: email }
+            }
+            const result = await cartCollection.find(query).toArray();
             res.send(result);
         });
 
