@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jp082z4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -24,6 +24,7 @@ const client = new MongoClient(uri, {
 async function run() {
     const userCollection = client.db("Game-Enfiled").collection("users");
     const cartCollection = client.db("Game-Enfiled").collection("carts");
+    
     try {
 
         // await client.connect();
@@ -69,7 +70,10 @@ async function run() {
         });
 
         app.delete("/carts", async (req, res) => {
-            
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await cartCollection.deleteOne(query) ;
+            res.send(result);
         });
 
         await client.db("admin").command({ ping: 1 });
